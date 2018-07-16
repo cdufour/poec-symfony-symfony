@@ -1,0 +1,14 @@
+******
+Créer une route /bravo qui retournera au client le texte:
+ "Le routage Symfony est excellent !"
+******
+
+******
+ Sur la page player afficher les infos manquantes:
+ - le numéro de maillot
+ - Titulaire ou Remplaçant
+
+ Afficher la photo du joueur
+ (modifier la source de données en ajoutant
+ une clé photo à chaque joueur)
+******

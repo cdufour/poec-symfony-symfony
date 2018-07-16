@@ -1,0 +1,19 @@
+index:
+  path: /
+  controller: App\Controller\DefaultController::index
+
+home:
+  path: /home
+  controller: App\Controller\DefaultController::home
+
+bravo:
+  path: /bravo
+  controller: App\Controller\DefaultController::bravo
+
+demo:
+  path: /demo
+  controller: App\Controller\DemoController::index
+
+player:
+  path: /player/{id}
+  controller: App\Controller\DemoController::player
