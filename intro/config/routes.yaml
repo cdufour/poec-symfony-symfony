@@ -17,3 +17,7 @@ demo:
 player:
   path: /player/{id}
   controller: App\Controller\DemoController::player
+
+players:
+  path: /players
+  controller: App\Controller\DemoController::players

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block body %}
+<ul>
+  {% for player in players %}
+  <li>{{player.name}} ({{player.num}})</li>
+  {% endfor %}
+</ul>
+{% endblock %}

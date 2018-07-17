@@ -4,6 +4,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 //use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Player;
 
 class DemoController extends Controller
 {
@@ -64,5 +65,34 @@ class DemoController extends Controller
     return $this->render('player.html.twig', array(
       'player' => $player
     ));
+  }
+
+  public function players()
+  {
+    $p1 = new Player('Abdel M', 10, false, '');
+    $p2 = new Player('Cristiano Ronaldo', 7, false, '');
+    $p3 = new Player('Adil Rami', 17, true, '');
+
+    //$this->addPlayers();
+
+    // récupérer les joueurs en base de données
+    
+
+    return $this->render('players.html.twig', array(
+      'title' => 'Liste de joueurs',
+      'players' => [$p1, $p2, $p3]
+    ));
+
+  }
+
+  private function addPlayers()
+  {
+    $p1 = new Player('Pogba', 6, false, 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Lloris_2018_%28cropped%29.jpg/260px-Lloris_2018_%28cropped%29.jpg');
+    $p2 = new Player('Lloris', 1, true, 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Lloris_2018_%28cropped%29.jpg/260px-Lloris_2018_%28cropped%29.jpg');
+
+    $em = $this->getDoctrine()->getManager();
+    $em->persist($p1); // requête pendante (en attente d'exécution)
+    $em->persist($p2); // requête pendante (en attente d'exécution)
+    $em->flush(); // exécutions des requêtes pendantes
   }
 }

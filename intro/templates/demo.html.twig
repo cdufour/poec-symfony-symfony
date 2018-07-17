@@ -1,41 +1,37 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>DEMO</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css">
-  </head>
+{% extends 'base.html.twig' %}
 
-  <body>
-    <h1>{{ title }}</h1>
-    <div>{{ message }}</div>
+{% block title %}Page Demo{% endblock %}
 
-    {% if available %}
-    <p>Le prof est disponible</p>
-    {% endif %}
+{% block body %}
+<h1>{{ title }}</h1>
+<div>{{ message }}</div>
 
-    <ul>
-      {# commentaire Twig #}
-      {% for color in colors %}
-      <li>{{color}}</li>
-      {% endfor %}
-    </ul>
+{% if available %}
+<p>Le prof est disponible</p>
+{% endif %}
 
-    <table class="table table-striped table-bordered">
-      {% for player in players %}
-      <tr>
-        <td>
-          <a href="/player/{{player.id}}">{{player.name}}</a>
-        </td>
-        <td>{{player.num}}</td>
-        <td>
-          {% if player.substitute %}
-          <span>Remplaçant</span>
-          {% else %}
-          <span>Titulaire</span>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
-  </body>
-<html>
+<ul>
+  {# commentaire Twig #}
+  {% for color in colors %}
+  <li>{{color}}</li>
+  {% endfor %}
+</ul>
+
+<table class="table table-striped table-bordered">
+  {% for player in players %}
+  <tr>
+    <td>
+      <a href="/player/{{player.id}}">{{player.name}}</a>
+    </td>
+    <td>{{player.num}}</td>
+    <td>
+      {% if player.substitute %}
+      <span>Remplaçant</span>
+      {% else %}
+      <span>Titulaire</span>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

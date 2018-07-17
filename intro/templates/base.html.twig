@@ -1,12 +1,25 @@
-<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css">
+
+        {# problème version 4... a résoudre
+        <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+        #}
     </head>
     <body>
+      <header>
+        {% include 'nav.html.twig' %}
+      </header>
+
+      <div id="main">
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+      </div>
+
+      <footer>
+        {% include 'nav.html.twig' %}
+      </footer>
     </body>
 </html>
