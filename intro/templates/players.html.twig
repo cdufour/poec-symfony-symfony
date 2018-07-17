@@ -8,4 +8,10 @@
   <li>{{player.name}} ({{player.num}})</li>
   {% endfor %}
 </ul>
+
+<select>
+  {% for player in players2 %}
+  <option value="{{player.id}}">{{player.name}}</option>
+  {% endfor %}
+</select>
 {% endblock %}

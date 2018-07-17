@@ -12,3 +12,19 @@ Créer une route /bravo qui retournera au client le texte:
  (modifier la source de données en ajoutant
  une clé photo à chaque joueur)
 ******
+
+
+******
+Créer une entité Team avec les champs suivants:
+name, coach, foundationYear
+
+Ajouter un controller TeamController pour gérer
+les routes liées à l'entité Team
+
+Ajouter une route /teamForm proposant
+un formaire d'ajout d'une équipe.
+Traiter l'envoi du formulaire
+
+Ajouter une route /teams qui affichera la liste des équipes
+enregistrées sous forme de tableau
+******

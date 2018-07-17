@@ -3,7 +3,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-//use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Player;
 
 class DemoController extends Controller
@@ -76,11 +76,15 @@ class DemoController extends Controller
     //$this->addPlayers();
 
     // récupérer les joueurs en base de données
-    
+    // pour les requêtes en lecture, on utilise getRepository()
+    // le Repository gère toutes les requêtes en lecture
+    $repo = $this->getDoctrine()->getRepository(Player::class);
+    $players = $repo->findAll(); // SELECT * FROM Player
 
     return $this->render('players.html.twig', array(
       'title' => 'Liste de joueurs',
-      'players' => [$p1, $p2, $p3]
+      'players' => [$p1, $p2, $p3],
+      'players2' => $players
     ));
 
   }
@@ -90,9 +94,55 @@ class DemoController extends Controller
     $p1 = new Player('Pogba', 6, false, 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Lloris_2018_%28cropped%29.jpg/260px-Lloris_2018_%28cropped%29.jpg');
     $p2 = new Player('Lloris', 1, true, 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Lloris_2018_%28cropped%29.jpg/260px-Lloris_2018_%28cropped%29.jpg');
 
+    // getManager() fournit un objet gérant
+    // les requêtes en écriture
     $em = $this->getDoctrine()->getManager();
     $em->persist($p1); // requête pendante (en attente d'exécution)
     $em->persist($p2); // requête pendante (en attente d'exécution)
     $em->flush(); // exécutions des requêtes pendantes
+  }
+
+  public function playerForm(Request $request)
+  {
+    // l'objet $request permet d'obtenir des informations
+    // sur le requête
+
+    // 2 cas de figure
+
+    // Cas 1 : POST => traitement de l'envoi du formulaire
+    if ($request->isMethod('post')) {
+      // si la méthode HTTP de la requête est post
+      // récupérer les valeurs postées
+      //var_dump($request->request)
+      //$request->request version objet de $_POST
+      //var_dump($_POST);
+      $name       = $request->request->get('name');
+      $num        = $request->request->get('num');
+      $substitute = $request->request->get('substitute');
+      $photo      = $request->request->get('photo');
+
+      //var_dump($substitute);
+      //renvoie NULL si checkbox non cochée, si cochée : "On"
+
+      // reformatage des données afin qu'elles correspondent
+      // au type attendu (bool) par le constructreur de la classe Player
+      if ($substitute) {
+        $substitute = true;
+      } else {
+        $substitute = false;
+      }
+
+      // Enregistrement en DB
+      $player = new Player($name, $num, $substitute, $photo);
+      $em = $this->getDoctrine()->getManager();
+      $em->persist($player);
+      $em->flush();
+
+      // redirection vers la route players
+      return $this->redirectToRoute('players');
+    }
+
+    // Cas 2: GET => retourne le formulaire
+    return $this->render('playerForm.html.twig', array());
   }
 }

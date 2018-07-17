@@ -21,3 +21,7 @@ player:
 players:
   path: /players
   controller: App\Controller\DemoController::players
+
+player_form:
+  path: /playerform
+  controller: App\Controller\DemoController::playerForm
