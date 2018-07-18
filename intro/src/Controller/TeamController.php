@@ -4,6 +4,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Team;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class TeamController extends Controller
 {
@@ -29,6 +31,24 @@ class TeamController extends Controller
 
     // GET
     return $this->render('team/form.html.twig');
+  }
+
+  public function teamFormBis(Request $request)
+  {
+    // création d'un formulaire d'ajout d'une équipe
+    // approche orientée controlleur (!= approche orientée template)
+    $team = new Team('','', 2000); // création d'un objet vide
+    $form = $this->createFormBuilder($team)
+      ->add('name', TextType::class)
+      ->add('coach', TextType::class)
+      ->add('foundationYear', TextType::class)
+      ->add('submit', SubmitType::class, array('label' => 'Enregistrer'))
+      ->getForm(); // produit un objet modellisant le formulaire
+
+    return $this->render('team/formbis.html.twig', array(
+      'form' => $form->createView() // produit le balisage
+    ));
+
   }
 
   public function teams()

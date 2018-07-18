@@ -30,6 +30,10 @@ team_form:
   path: /teamform
   controller: App\Controller\TeamController::teamForm
 
+team_form_bis:
+  path: /teamformbis
+  controller: App\Controller\TeamController::teamFormBis
+
 teams:
   path: /teams
   controller: App\Controller\TeamController::teams
