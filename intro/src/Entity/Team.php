@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TeamRepository")
@@ -18,6 +19,16 @@ class Team
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *  min=3,
+     *  max=20,
+     *  minMessage="Le nom doit comporter entre 3 et 20 caractères"
+     * )
+     * @Assert\NotIdenticalTo(
+     *  value="Real Madrid",
+     *  message="Pas de Real dans ma base !"
+     * )
      */
     private $name;
 
@@ -28,6 +39,12 @@ class Team
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *  min=1900,
+     *  max=2018,
+     *  minMessage="L'année doit être comprise entre 1900 et 2018",
+     *  maxMessage="L'année doit être comprise entre 1900 et 2018"
+     * )
      */
     private $foundationYear;
 

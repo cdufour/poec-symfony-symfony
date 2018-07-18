@@ -45,6 +45,21 @@ class TeamController extends Controller
       ->add('submit', SubmitType::class, array('label' => 'Enregistrer'))
       ->getForm(); // produit un objet modellisant le formulaire
 
+    // communication entre l'objet form et la requête http
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+      // isSubmitted() permet de savoir si la formulaire a été posté
+
+      $team = $form->getData(); // l'objet team
+      // est alimentée avec les données du formulaire
+      $em = $this->getDoctrine()->getManager();
+      $em->persist($team);
+      $em->flush();
+
+      return $this->redirectToRoute('teams');
+    }
+
     return $this->render('team/formbis.html.twig', array(
       'form' => $form->createView() // produit le balisage
     ));
