@@ -35,6 +35,15 @@ class TeamController extends Controller
 
   public function teamFormBis(Request $request)
   {
+    $labels_fr = [
+      'name' => 'nom',
+      'coach' => 'entraîneur',
+      'foundationYear' => 'Année de fondation'
+    ];
+
+    $teamExist = false; // flag permettant de savoir si l'équipe
+    // qu'on souhaite enregistrer existe déjà en base de données
+
     // création d'un formulaire d'ajout d'une équipe
     // approche orientée controlleur (!= approche orientée template)
     $team = new Team('','', 2000); // création d'un objet vide
@@ -53,14 +62,27 @@ class TeamController extends Controller
 
       $team = $form->getData(); // l'objet team
       // est alimentée avec les données du formulaire
-      $em = $this->getDoctrine()->getManager();
-      $em->persist($team);
-      $em->flush();
 
-      return $this->redirectToRoute('teams');
+      // vérifier si existe déjà une équipe ayant le
+      // même nom en base de données
+      $repo = $this->getDoctrine()->getRepository(Team::class);
+      $found  = $repo->findByName($team->getName());
+
+      if (count($found) == 0) {
+        // aucune portant déjà ce nom n'a été trouvée
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($team);
+        $em->flush();
+        return $this->redirectToRoute('teams');
+      } else {
+        $teamExist = true;
+      }
+
     }
 
     return $this->render('team/formbis.html.twig', array(
+      'teamExist' => $teamExist,
+      'labels_fr' => $labels_fr,
       'form' => $form->createView() // produit le balisage
     ));
 
