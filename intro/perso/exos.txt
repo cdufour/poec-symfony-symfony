@@ -22,9 +22,12 @@ Ajouter un controller TeamController pour gérer
 les routes liées à l'entité Team
 
 Ajouter une route /teamForm proposant
-un formaire d'ajout d'une équipe.
+un formulaire d'ajout d'une équipe.
 Traiter l'envoi du formulaire
 
 Ajouter une route /teams qui affichera la liste des équipes
-enregistrées sous forme de tableau
+enregistrées, sous forme de tableau
+
+Ajouter les liens vers ces nouvelles routes dans le
+menu principal
 ******

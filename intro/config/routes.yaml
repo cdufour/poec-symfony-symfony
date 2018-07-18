@@ -25,3 +25,11 @@ players:
 player_form:
   path: /playerform
   controller: App\Controller\DemoController::playerForm
+
+team_form:
+  path: /teamform
+  controller: App\Controller\TeamController::teamForm
+
+teams:
+  path: /teams
+  controller: App\Controller\TeamController::teams
