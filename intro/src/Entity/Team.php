@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -48,12 +50,18 @@ class Team
      */
     private $foundationYear;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Player", mappedBy="team")
+     */
+    private $players;
+
 
     public function __construct($name, $coach, $yearFoundation)
     {
       $this->setName($name);
       $this->setCoach($coach);
       $this->setFoundationYear($yearFoundation);
+      $this->players = new ArrayCollection();
     }
 
     public function getId()
@@ -93,6 +101,37 @@ class Team
     public function setFoundationYear(int $foundationYear): self
     {
         $this->foundationYear = $foundationYear;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Player[]
+     */
+    public function getPlayers(): Collection
+    {
+        return $this->players;
+    }
+
+    public function addPlayer(Player $player): self
+    {
+        if (!$this->players->contains($player)) {
+            $this->players[] = $player;
+            $player->setTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlayer(Player $player): self
+    {
+        if ($this->players->contains($player)) {
+            $this->players->removeElement($player);
+            // set the owning side to null (unless already changed)
+            if ($player->getTeam() === $this) {
+                $player->setTeam(null);
+            }
+        }
 
         return $this;
     }

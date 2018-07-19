@@ -36,6 +36,11 @@ class Player
      */
     private $photo;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Team", inversedBy="players")
+     */
+    private $team;
+
     // Ajout d'un constructeur
     public function __construct(
       $name, $num, ?bool $substitute, ?string $photo) {
@@ -95,6 +100,18 @@ class Player
     public function setPhoto(?string $photo): self
     {
         $this->photo = $photo;
+
+        return $this;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(?Team $team): self
+    {
+        $this->team = $team;
 
         return $this;
     }
