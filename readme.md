@@ -5,6 +5,9 @@ Après téléchargement ou clonage de ce repository:
 composer Install
 - modifier le paramètre DATABASE_URL du fichier .env
 
+Pour installer composer: https://getcomposer.org/download/
+Pour créer un projet symfony: https://symfony.com/download
+
 Si nécessaire:
  - créer la base de données:
  php bin/console doctrine:database:create
