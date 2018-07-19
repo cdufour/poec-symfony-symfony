@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Player;
+use App\Entity\Team;
 
 class DemoController extends Controller
 {
@@ -107,6 +108,8 @@ class DemoController extends Controller
     // l'objet $request permet d'obtenir des informations
     // sur le requête
 
+    $teamRepo = $this->getDoctrine()->getRepository(Team::class);
+
     // 2 cas de figure
 
     // Cas 1 : POST => traitement de l'envoi du formulaire
@@ -120,6 +123,7 @@ class DemoController extends Controller
       $num        = $request->request->get('num');
       $substitute = $request->request->get('substitute');
       $photo      = $request->request->get('photo');
+      $team_id    = intval($request->request->get('team'));
 
       //var_dump($substitute);
       //renvoie NULL si checkbox non cochée, si cochée : "On"
@@ -134,6 +138,15 @@ class DemoController extends Controller
 
       // Enregistrement en DB
       $player = new Player($name, $num, $substitute, $photo);
+
+      //$player->setTeam($team_id); // INTERDIT
+      // setTeams attend un argument de type Team (un objet) pas un entier
+      // solution: obtenir un objet à partir de l'identifiant (entier)
+      // findById renvoie un tableau d'objets, on extrait l'objet
+      // situé à l'indice 0
+      $team = $teamRepo->findById($team_id)[0];
+      $player->setTeam($team);
+
       $em = $this->getDoctrine()->getManager();
       $em->persist($player);
       $em->flush();
@@ -143,6 +156,8 @@ class DemoController extends Controller
     }
 
     // Cas 2: GET => retourne le formulaire
-    return $this->render('playerForm.html.twig', array());
+    return $this->render('playerForm.html.twig', array(
+      'teams' => $teamRepo->findAll() // récupération des équipes
+    ));
   }
 }

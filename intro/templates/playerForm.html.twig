@@ -21,6 +21,14 @@
     <input type="text" name="photo">
   </div>
   <div class="">
+    <select name="team">
+      <option value="0">Choisir une équipe</option>
+      {% for team in teams %}
+      <option value="{{team.id}}">{{team.name}}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="">
     <input type="submit" name="submit" value="Enregistrer">
   </div>
 </form>
