@@ -75,6 +75,16 @@ class QuestionController extends Controller
             return $this->redirectToRoute('question_edit', ['id' => $question->getId()]);
         }
 
+        if ($formAnswer->isSubmitted() && $formAnswer->isValid()) {
+          // réponse ajoutée
+          $question->addAnswer($answer);
+          $em = $this->getDoctrine()->getManager();
+          $em->persist($answer);
+          $em->flush();
+
+          return $this->redirectToRoute('question_edit', ['id' => $question->getId()]);
+        }
+
         return $this->render('question/edit.html.twig', [
             'question' => $question,
             'form' => $form->createView(),

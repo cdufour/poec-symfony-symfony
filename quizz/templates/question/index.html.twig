@@ -10,6 +10,9 @@
             <tr>
                 <th>Id</th>
                 <th>Label</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th>Nb answers</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -18,6 +21,9 @@
             <tr>
                 <td>{{ question.id }}</td>
                 <td>{{ question.label }}</td>
+                <td>{{ question.category.label }}</td>
+                <td>{{ question.difficulty.label }}</td>
+                <td>{{ question.getAnswers | length }}</td>
                 <td>
                     <a href="{{ path('question_show', {'id': question.id}) }}">show</a>
                     <a href="{{ path('question_edit', {'id': question.id}) }}">edit</a>
