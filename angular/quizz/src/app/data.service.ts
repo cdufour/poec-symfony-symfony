@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ClientAnswer } from './data.interface';
+
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +24,11 @@ export class DataService {
 
   getQuizz(params: string) {
     return this.http.get(this.api + '/quizz' + params);
+  }
+
+  postClientAnswers(client_answers: ClientAnswer[]) {
+    return this.http.post(
+      this.api + '/quizz/answers', client_answers);
   }
 
 }

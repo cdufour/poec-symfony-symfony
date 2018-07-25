@@ -125,6 +125,15 @@ class ApiController extends Controller
 
     }
 
+    /**
+     * @Route("/api/quizz/answers", name="api_quizz_answers")
+     */
+    public function quizz_answers(Request $request)
+    {
+      return $this->json_response(['test' => 'ok']);
+    }
+
+
 
     // helpers
     private function json_response(Array $data)

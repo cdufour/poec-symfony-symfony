@@ -1,31 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../data.service';
-
-interface Category {
-  id: number;
-  label: string
-}
-
-interface Difficulty {
-  id: number;
-  label: string;
-}
-
-interface Answer {
-  id: number;
-  label: string;
-}
-
-interface Question {
-  id: number;
-  label: string;
-  choices: Answer[];
-}
-
-interface ClientAnswer {
-  qid: number;
-  aid: number; // une seule réponse possible
-}
+import { Category, Difficulty, Question, ClientAnswer} from '../data.interface';
 
 @Component({
   selector: 'app-quizz',
@@ -76,13 +51,16 @@ export class QuizzComponent implements OnInit {
   }
 
   validQuestion() {
-    // envoi au serveur pour validation
 
     // passage à la question suivante
     if (this.indexQuestion < this.questions.length - 1) {
       this.indexQuestion++;
-      this.btnValidDisabled = true; // btn désactivé
+    } else {
+      // fin du formulaire (dernière question)
+      // envoi des réponses au serveur pour validation
+      this.sendAnswers();
     }
+    this.btnValidDisabled = true; // btn désactivé
   }
 
   makeChoice(choice) {
@@ -130,6 +108,12 @@ export class QuizzComponent implements OnInit {
     }
     return -1; // si l'id de la question n'a pas été trouvé
     // on retourne -1
+  }
+
+  sendAnswers() {
+    console.log('Envoi des réponses');
+    
+    // envoi des réponses au serveur via dataService
   }
 
 }
