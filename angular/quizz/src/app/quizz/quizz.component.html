@@ -37,14 +37,17 @@
   <span>Question {{ indexQuestion + 1 }} sur {{questions.length}}</span>
   <h3>{{ questions[indexQuestion].label }}</h3>
 
-  <ul>
-    <li *ngFor="let choice of questions[indexQuestion].choices">
+  <ul class="choices">
+    <li
+      (click)="makeChoice(choice)"
+      *ngFor="let choice of questions[indexQuestion].choices">
     {{choice.label}}
     </li>
   </ul>
 
   <button
     (click)="validQuestion()"
+    [disabled]="btnValidDisabled"
     class="btn btn-primary">Valider</button>
 </div>
 

@@ -22,6 +22,11 @@ interface Question {
   choices: Answer[];
 }
 
+interface ClientAnswer {
+  qid: number;
+  aid: number; // une seule réponse possible
+}
+
 @Component({
   selector: 'app-quizz',
   templateUrl: './quizz.component.html',
@@ -38,6 +43,11 @@ export class QuizzComponent implements OnInit {
 
   isQcmReceived: boolean = false; // qcm reçu ou pas
   indexQuestion: number = 0;
+
+  // tableau des réponses client
+  client_answers: ClientAnswer[] = [];
+
+  btnValidDisabled: boolean = true;
 
   constructor(private dataService: DataService) { }
 
@@ -71,7 +81,55 @@ export class QuizzComponent implements OnInit {
     // passage à la question suivante
     if (this.indexQuestion < this.questions.length - 1) {
       this.indexQuestion++;
+      this.btnValidDisabled = true; // btn désactivé
     }
+  }
+
+  makeChoice(choice) {
+    console.log('exécution de makeChoice()');
+    let qid = this.questions[this.indexQuestion].id;
+    let aid = choice.id;
+    let answer: ClientAnswer = {qid: qid, aid: aid};
+    //console.log('Question: ' + qid + ' => Choix:' + aid);
+
+    // à chaque clic sur une réponse => deux possiblités
+    // 1) l'id de la question en cours existe déjà dans le tableau
+    // et donc une réponse a déjà fournie, du coup: on la remplace
+    // 2) l'id de la question n'existe pas, du coup: on l'ajoute
+
+    if (this.client_answers.length == 0) {
+      console.log('tableau vide, première insertion')
+      this.client_answers.push(answer);
+    }
+
+    let qidx: number = this.isQuestionTreated(answer.qid);
+
+    if (qidx == -1) {
+      console.log('Question non traitée, pas de réponse associée');
+      // Ajout de la question/réponse dans le tableau des
+      //réponses client
+      this.client_answers.push(answer);
+    } else {
+      console.log('Question déjà traitée, mise à jour de la réponse associée')
+      this.client_answers[qidx].aid = answer.aid;
+    }
+
+    console.log(this.client_answers);
+    // bouton de validation devient actif
+    this.btnValidDisabled = false;
+  }
+
+
+  // helpers
+  // méthode déterminant si une question a déjà reçu une réponse
+  isQuestionTreated(qid: number): number {
+    for (let i:number=0; i<this.client_answers.length; i++) {
+      // si trouvé, retourne la position (l'indice) de
+      // la question dans le tableau
+      if (this.client_answers[i].qid == qid) return i;
+    }
+    return -1; // si l'id de la question n'a pas été trouvé
+    // on retourne -1
   }
 
 }
