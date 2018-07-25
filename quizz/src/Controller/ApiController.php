@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Category;
 use App\Entity\Difficulty;
 use App\Entity\Question;
@@ -84,6 +85,48 @@ class ApiController extends Controller
       return $this->json_response($difficulties_assoc);
     }
 
+    /**
+     * @Route("/api/quizz", name="api_quizz")
+     */
+    public function quizz(Request $request)
+    {
+      // récupération des paramètres d'URL
+      // ->query donne accès à la superglobale $_GET
+      $category_id      = intval($request->query->get('cat'));
+      $difficulty_id    = intval($request->query->get('dif'));
+      $nb_questions     = intval($request->query->get('nbq'));
+
+      $filters = []; // par défaut pas de filtre
+
+      // si les critères sont différents de 0, on ajoute de
+      // nouvelles paires clé => valeur au tableau des filtres
+      if ($category_id != 0) $filters['category'] = $category_id;
+      if ($difficulty_id != 0) $filters['difficulty'] = $difficulty_id;
+
+      $questionRepo = $this->getDoctrine()->getRepository(Question::class);
+      $questions = $questionRepo->findBy($filters, [], $nb_questions);
+
+      if ($questions) {
+        //return $this->json_response(['question0' => $questions[0]->getLabel()]);
+        $qcm = [];
+        foreach($questions as $question) {
+          $question = [
+            'id' => $question->getId(),
+            'label' => $question->getLabel(),
+            'choices' => $this->getChoices($question)
+          ];
+          array_push($qcm, $question);
+        }
+        return $this->json_response($qcm);
+
+      } else {
+        return $this->json_response(['qcm' => 'aucune question']);
+      }
+
+    }
+
+
+    // helpers
     private function json_response(Array $data)
     {
       $data_json = json_encode($data);
@@ -92,6 +135,19 @@ class ApiController extends Controller
       $res->headers->set('Access-Control-Allow-Origin', '*');
       $res->setContent($data_json);
       return $res;
+    }
+
+    private function getChoices($question)
+    {
+      $choices = [];
+      foreach($question->getAnswers() as $answer) {
+        $choice = [
+          'id' => $answer->getId(),
+          'label' => $answer->getLabel()
+        ];
+        array_push($choices, $choice);
+      }
+      return $choices;
     }
 
 }
