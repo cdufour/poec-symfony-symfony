@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ClientAnswer } from './data.interface';
 
 
@@ -27,8 +27,9 @@ export class DataService {
   }
 
   postClientAnswers(client_answers: ClientAnswer[]) {
-    return this.http.post(
-      this.api + '/quizz/answers', client_answers);
+    // transformation en JSON du tableau client_answers
+    let json:string  = JSON.stringify({answers: client_answers});
+    return this.http.post(this.api + '/quizz/answers', json);
   }
 
 }

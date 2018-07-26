@@ -23,6 +23,9 @@ export class QuizzComponent implements OnInit {
   client_answers: ClientAnswer[] = [];
 
   btnValidDisabled: boolean = true;
+  isQcmCompleted: boolean = false;
+
+  score: number = 0;
 
   constructor(private dataService: DataService) { }
 
@@ -63,8 +66,18 @@ export class QuizzComponent implements OnInit {
     this.btnValidDisabled = true; // btn désactivé
   }
 
-  makeChoice(choice) {
-    console.log('exécution de makeChoice()');
+  makeChoice(choice, choice_list, choice_list_item) {
+    // retrait de la classe selected sur l'élément
+    // précédemment sélectionné (nettoyage)
+    let choices = choice_list.children; // enfants du ul => tableau de li
+
+    for (let i:number = 0; i<choices.length; i++) {
+      choices[i].classList.remove('selected');
+    }
+
+    // mise en forme de l'élément (choix) sélectionné
+    choice_list_item.classList.add('selected');
+
     let qid = this.questions[this.indexQuestion].id;
     let aid = choice.id;
     let answer: ClientAnswer = {qid: qid, aid: aid};
@@ -76,23 +89,23 @@ export class QuizzComponent implements OnInit {
     // 2) l'id de la question n'existe pas, du coup: on l'ajoute
 
     if (this.client_answers.length == 0) {
-      console.log('tableau vide, première insertion')
+      //console.log('tableau vide, première insertion')
       this.client_answers.push(answer);
     }
 
     let qidx: number = this.isQuestionTreated(answer.qid);
 
     if (qidx == -1) {
-      console.log('Question non traitée, pas de réponse associée');
+      //console.log('Question non traitée, pas de réponse associée');
       // Ajout de la question/réponse dans le tableau des
       //réponses client
       this.client_answers.push(answer);
     } else {
-      console.log('Question déjà traitée, mise à jour de la réponse associée')
+      //console.log('Question déjà traitée, mise à jour de la réponse associée')
       this.client_answers[qidx].aid = answer.aid;
     }
 
-    console.log(this.client_answers);
+    //console.log(this.client_answers);
     // bouton de validation devient actif
     this.btnValidDisabled = false;
   }
@@ -112,8 +125,25 @@ export class QuizzComponent implements OnInit {
 
   sendAnswers() {
     console.log('Envoi des réponses');
-    
+
     // envoi des réponses au serveur via dataService
+    this.dataService.postClientAnswers(this.client_answers)
+      .subscribe((res: any) => {
+        this.score = res.result;
+        this.isQcmCompleted = true;
+      })
+  }
+
+  reset() {
+    this.questions = [];
+    this.selectCategory = 0;
+    this.selectDifficulty = 0;
+    this.nbQuestions = 10;
+    this.isQcmReceived = false;
+    this.indexQuestion = 0;
+    this.client_answers = [];
+    this.btnValidDisabled = true;
+    this.isQcmCompleted = false;
   }
 
 }

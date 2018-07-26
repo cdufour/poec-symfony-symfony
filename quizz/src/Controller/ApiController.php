@@ -72,7 +72,7 @@ class ApiController extends Controller
       $difficultyRepo = $this->getDoctrine()
         ->getRepository(Difficulty::class);
 
-      $difficulties = $difficultyRepo->findAll();
+      $difficulties = $difficultyRepo->findBy([], ['weight' => 'ASC']);
 
       $difficulties_assoc = [];
       foreach($difficulties as $difficulty) {
@@ -117,6 +117,7 @@ class ApiController extends Controller
           ];
           array_push($qcm, $question);
         }
+        shuffle($qcm); // mélange les éléments du tableau de manière aléatoire
         return $this->json_response($qcm);
 
       } else {
@@ -130,9 +131,22 @@ class ApiController extends Controller
      */
     public function quizz_answers(Request $request)
     {
-      return $this->json_response(['test' => 'ok']);
+      // on reçoit une requête ajax
+      // ->getContent permet d'obtenir le corps (body)
+      // de la reqûete, cad les données envoyées
+      $answers_json = $request->getContent(); // renvoie JSON
+      $answers = json_decode($answers_json, $assoc = true); // JSON => PHP
+      $result = $this->checkAnswers($answers['answers']);
+      return $this->json_response(['result' => $result]);
     }
 
+    /**
+     * @Route("/api/test", name="api_test")
+     */
+    public function test()
+    {
+      return new Response('test');
+    }
 
 
     // helpers
@@ -142,6 +156,8 @@ class ApiController extends Controller
       $res = new Response();
       $res->headers->set('Content-Type', 'application/json');
       $res->headers->set('Access-Control-Allow-Origin', '*');
+      //$res->headers->set('Access-Control-Allow-Methods', '*');
+      $res->headers->set('Access-Control-Allow-Headers', 'Content-Type');
       $res->setContent($data_json);
       return $res;
     }
@@ -155,8 +171,39 @@ class ApiController extends Controller
           'label' => $answer->getLabel()
         ];
         array_push($choices, $choice);
+        shuffle($choices);
       }
       return $choices;
     }
+
+    private function checkAnswers(Array $client_answers)
+    {
+      $result = 0;
+      $questionRepo = $this->getDoctrine()
+        ->getRepository(Question::class);
+
+      foreach($client_answers as $client_answer) {
+        // obtenion de l'objet Question à partir de l'id
+        $question = $questionRepo
+          ->findOneBy(
+            ['id' => intval($client_answer['qid'])]
+          );
+
+        // Récupération des réponses associées à la question
+        $answers = $question->getAnswers();
+
+        // itération sur les réponses associées à la question
+        // si la réponse est juste, le résultat est incrémenté de 1
+        for ($i=0; $i<count($answers); $i++) {
+          if ($answers[$i]->getId() == $client_answer['aid']) {
+            if ($answers[$i]->getGood()) $result++;
+            break; // sortie prématurée de boucle,
+            // inutile d'itérer sur les autres réponses
+          }
+        }
+
+      } // fin foreach
+      return $result;
+    } // fin checkAnswers
 
 }
