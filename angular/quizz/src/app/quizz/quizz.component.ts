@@ -124,8 +124,6 @@ export class QuizzComponent implements OnInit {
   }
 
   sendAnswers() {
-    console.log('Envoi des réponses');
-
     // envoi des réponses au serveur via dataService
     this.dataService.postClientAnswers(this.client_answers)
       .subscribe((res: any) => {
