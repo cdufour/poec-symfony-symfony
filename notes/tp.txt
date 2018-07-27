@@ -23,3 +23,5 @@ L'intervalle accepté sera compris entre 10 secondes et 5 minutes.
 Si le nombre de secondes saisi n'est pas valide :
 - le client est informé (message dans l'interface)
 - la méthode d'interrogation n'est pas déclenchée.
+Pour la gestion de l'intervalle, utiliser les natives JS:
+setInterval et clearInterval
